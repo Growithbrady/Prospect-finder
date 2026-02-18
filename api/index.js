@@ -3,17 +3,14 @@
 const fetch = require('node-fetch');
 
 module.exports = async (req, res) => {
-  // Enable CORS for all origins
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Handle preflight requests
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  // Only accept POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -41,14 +38,12 @@ module.exports = async (req, res) => {
       if (!placeId) {
         return res.status(400).json({ error: 'placeId required for details' });
       }
-      // Added reviews and types to the fields list
       const fields = 'name,formatted_address,formatted_phone_number,website,rating,user_ratings_total,business_status,url,types,reviews';
       url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=${fields}&key=${apiKey}`;
     }
 
     const response = await fetch(url);
     const data = await response.json();
-
     res.status(200).json(data);
 
   } catch (error) {
