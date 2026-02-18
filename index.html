@@ -590,6 +590,12 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Keywords to Include (optional)</label>
+                    <input type="text" id="includeKeywords" placeholder="e.g., move out, deep clean, residential">
+                    <div class="help-text">Comma separated — only show businesses matching these terms</div>
+                </div>
+
+                <div class="form-group">
                     <label>Keywords to Exclude (optional)</label>
                     <input type="text" id="excludeKeywords" placeholder="e.g., LLC, national, franchise">
                     <div class="help-text">Comma separated — filters out big chains</div>
@@ -715,6 +721,8 @@
             const maxResults = parseInt(document.getElementById('maxResults').value);
             const excludeKeywords = document.getElementById('excludeKeywords').value
                 .split(',').map(k => k.trim().toLowerCase()).filter(k => k.length > 0);
+            const includeKeywords = document.getElementById('includeKeywords').value
+                .split(',').map(k => k.trim().toLowerCase()).filter(k => k.length > 0);
 
             if (!apiKey) { showStatus('Please enter your Google API key', 'error'); return; }
             if (!location) { showStatus('Please enter a city and state', 'error'); return; }
@@ -777,6 +785,9 @@
                         if (excludeKeywords.some(kw => name.includes(kw))) return false;
                     }
 
+                    // Include keywords — checked against name, types, and reviews after details fetch
+                    // (pre-filter by name only at this stage, full check happens after details)
+
                     return true;
                 });
 
@@ -792,6 +803,20 @@
                     
                     const details = await getPlaceDetails(place.place_id, apiKey);
                     const hasWebsite = !!details.website;
+
+                    // Apply include keywords filter — check types array and review text
+                    if (includeKeywords.length > 0) {
+                        const typesText = (details.types || []).join(' ').toLowerCase();
+                        const reviewsText = (details.reviews || [])
+                            .map(r => (r.text || '').toLowerCase())
+                            .join(' ');
+                        const searchText = typesText + ' ' + reviewsText;
+                        if (!includeKeywords.some(kw => searchText.includes(kw))) {
+                            setProgress(60 + (35 * (i + 1) / toFetch.length));
+                            await sleep(200);
+                            continue;
+                        }
+                    }
 
                     // Apply website filter
                     if (websiteFilter === 'no-website' && hasWebsite) {
@@ -968,33 +993,106 @@
                 `${base} installation ${location}`
             ];
 
-            // Add type-specific queries
             const extras = {
                 'hvac': [
                     `air conditioning repair ${location}`,
+                    `air conditioning installation ${location}`,
                     `furnace repair ${location}`,
+                    `furnace installation ${location}`,
                     `heating cooling ${location}`,
-                    `ac service ${location}`
+                    `ac service ${location}`,
+                    `ac tune up ${location}`,
+                    `heat pump repair ${location}`,
+                    `ductwork ${location}`,
+                    `mini split installation ${location}`
                 ],
                 'plumbing': [
                     `plumber ${location}`,
                     `drain cleaning ${location}`,
-                    `pipe repair ${location}`
+                    `pipe repair ${location}`,
+                    `water heater repair ${location}`,
+                    `water heater installation ${location}`,
+                    `leak repair ${location}`,
+                    `sewer repair ${location}`,
+                    `toilet repair ${location}`,
+                    `emergency plumber ${location}`,
+                    `bathroom plumbing ${location}`
                 ],
                 'roofing': [
                     `roofer ${location}`,
                     `roof replacement ${location}`,
-                    `roof repair ${location}`
+                    `roof repair ${location}`,
+                    `shingle replacement ${location}`,
+                    `flat roof repair ${location}`,
+                    `roof inspection ${location}`,
+                    `gutter installation ${location}`,
+                    `storm damage roof ${location}`,
+                    `metal roofing ${location}`,
+                    `roof leak repair ${location}`
                 ],
                 'electrical': [
                     `electrician ${location}`,
                     `electrical repair ${location}`,
-                    `wiring ${location}`
+                    `wiring ${location}`,
+                    `panel upgrade ${location}`,
+                    `outlet installation ${location}`,
+                    `ceiling fan installation ${location}`,
+                    `generator installation ${location}`,
+                    `EV charger installation ${location}`,
+                    `lighting installation ${location}`,
+                    `emergency electrician ${location}`
                 ],
                 'landscaping': [
                     `lawn care ${location}`,
                     `lawn service ${location}`,
-                    `yard maintenance ${location}`
+                    `yard maintenance ${location}`,
+                    `lawn mowing ${location}`,
+                    `tree trimming ${location}`,
+                    `tree removal ${location}`,
+                    `mulching ${location}`,
+                    `sprinkler installation ${location}`,
+                    `sod installation ${location}`,
+                    `landscape design ${location}`
+                ],
+                'pest control': [
+                    `exterminator ${location}`,
+                    `pest exterminator ${location}`,
+                    `bug exterminator ${location}`,
+                    `termite treatment ${location}`,
+                    `rodent control ${location}`,
+                    `mosquito control ${location}`,
+                    `bed bug treatment ${location}`,
+                    `ant exterminator ${location}`,
+                    `wildlife removal ${location}`,
+                    `pest inspection ${location}`
+                ],
+                'cleaning': [
+                    `house cleaning ${location}`,
+                    `home cleaning ${location}`,
+                    `maid service ${location}`,
+                    `deep cleaning ${location}`,
+                    `move out cleaning ${location}`,
+                    `move in cleaning ${location}`,
+                    `college move out cleaning ${location}`,
+                    `apartment cleaning ${location}`,
+                    `office cleaning ${location}`,
+                    `post construction cleaning ${location}`,
+                    `airbnb cleaning ${location}`,
+                    `end of lease cleaning ${location}`,
+                    `recurring cleaning ${location}`,
+                    `residential cleaning ${location}`
+                ],
+                'handyman': [
+                    `handyman ${location}`,
+                    `home repair ${location}`,
+                    `home improvement ${location}`,
+                    `drywall repair ${location}`,
+                    `door repair ${location}`,
+                    `furniture assembly ${location}`,
+                    `tv mounting ${location}`,
+                    `painting ${location}`,
+                    `deck repair ${location}`,
+                    `fence repair ${location}`
                 ]
             };
 
@@ -1024,126 +1122,4 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-value">${warm}</div>
-                    <div class="stat-label">Warm Leads</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${noWebsite}</div>
-                    <div class="stat-label">No Website</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${hasWebsite}</div>
-                    <div class="stat-label">Has Website</div>
-                </div>
-            `;
-
-            renderTable();
-            document.getElementById('results').style.display = 'block';
-        }
-
-        function renderTable() {
-            let filtered = [...allProspects];
-
-            if (currentView === 'no-website') filtered = filtered.filter(p => !p.website);
-            if (currentView === 'has-website') filtered = filtered.filter(p => !!p.website);
-            if (currentView === 'hot') filtered = filtered.filter(p => p.score >= 70);
-
-            const tbody = document.getElementById('resultsBody');
-            tbody.innerHTML = '';
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-dim); padding: 40px;">No results in this category</td></tr>`;
-                return;
-            }
-
-            filtered.forEach(p => {
-                const scoreClass = p.score >= 70 ? 'hot' : p.score >= 50 ? 'warm' : 'cold';
-                const websiteBadge = p.website 
-                    ? `<a href="${p.website}" target="_blank" class="website-link"><span class="badge has-website">View Site</span></a>`
-                    : '<span class="badge no-website">NO WEBSITE</span>';
-
-                tbody.innerHTML += `
-                    <tr>
-                        <td><span class="score ${scoreClass}">${p.score}</span></td>
-                        <td>
-                            <strong>${p.name}</strong><br>
-                            <small style="color: var(--text-dim)">${p.reasons}</small><br>
-                            <small style="color: var(--accent2)">💡 ${p.opportunity || 'General opportunity'}</small>
-                        </td>
-                        <td>${p.phone}</td>
-                        <td>${p.rating} ⭐</td>
-                        <td>${p.reviews}</td>
-                        <td>${websiteBadge}</td>
-                        <td><small>${p.address}</small></td>
-                    </tr>
-                `;
-            });
-        }
-
-        // ========================================
-        // EXPORT
-        // ========================================
-        document.getElementById('downloadCsv').addEventListener('click', () => {
-            downloadFile(convertToCSV(allProspects), 'prospects.csv', 'text/csv');
-        });
-
-        document.getElementById('copyAll').addEventListener('click', () => {
-            navigator.clipboard.writeText(convertToCSV(allProspects));
-            alert('Copied to clipboard!');
-        });
-
-        function convertToCSV(data) {
-            const headers = ['Score', 'Business Name', 'Phone', 'Rating', 'Reviews', 'Has Website', 'Website URL', 'Address', 'Google Maps URL', 'Opportunities', 'Why Opportunity'];
-            const rows = data.map(p => [
-                p.score, p.name, p.phone, p.rating, p.reviews,
-                p.website ? 'YES' : 'NO',
-                p.website || '',
-                p.address, p.mapsUrl, p.opportunity, p.reasons
-            ]);
-            return [headers.join(','), ...rows.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n');
-        }
-
-        function downloadFile(content, filename, type) {
-            const blob = new Blob([content], { type });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // ========================================
-        // UI HELPERS
-        // ========================================
-        function showStatus(message, type = 'info') {
-            const status = document.getElementById('status');
-            status.innerHTML = `<div class="status-line">${message}</div>`;
-            status.className = type;
-            status.style.display = 'block';
-        }
-
-        function addStatusLine(message) {
-            const status = document.getElementById('status');
-            const line = document.createElement('div');
-            line.className = 'status-line';
-            line.textContent = message;
-            status.appendChild(line);
-            status.scrollTop = status.scrollHeight;
-        }
-
-        function setProgress(percent) {
-            document.getElementById('progress-bar').style.width = percent + '%';
-        }
-
-        function disableButton(disabled) {
-            const btn = document.getElementById('runScraper');
-            btn.disabled = disabled;
-            btn.innerHTML = disabled ? 'Running Search...<span class="loading"></span>' : 'Run Search';
-        }
-
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-    </script>
-</body>
-</html>
+                    <div class="stat-
