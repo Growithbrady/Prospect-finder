@@ -657,7 +657,7 @@
         // ========================================
         console.log('%c✅ CORRECT FILE LOADED', 'color: #00ff88; font-size: 16px; font-weight: bold');
         console.log('%c✅ Using Vercel Backend (NOT allorigins)', 'color: #00ff88; font-size: 14px');
-        console.log('%c✅ Backend URL:https://prospect-finder-api.vercel.app/api', 'color: #00ccff; font-size: 12px');
+        console.log('%c✅ Backend URL: https://prospect-finder-api.vercel.app/api', 'color: #00ccff; font-size: 12px');
         
         // ========================================
         // BACKEND API CONFIGURATION
@@ -1122,4 +1122,126 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-value">${warm}</div>
-                    <div class="stat-
+                    <div class="stat-label">Warm Leads</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${noWebsite}</div>
+                    <div class="stat-label">No Website</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${hasWebsite}</div>
+                    <div class="stat-label">Has Website</div>
+                </div>
+            `;
+
+            renderTable();
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function renderTable() {
+            let filtered = [...allProspects];
+
+            if (currentView === 'no-website') filtered = filtered.filter(p => !p.website);
+            if (currentView === 'has-website') filtered = filtered.filter(p => !!p.website);
+            if (currentView === 'hot') filtered = filtered.filter(p => p.score >= 70);
+
+            const tbody = document.getElementById('resultsBody');
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-dim); padding: 40px;">No results in this category</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const scoreClass = p.score >= 70 ? 'hot' : p.score >= 50 ? 'warm' : 'cold';
+                const websiteBadge = p.website 
+                    ? `<a href="${p.website}" target="_blank" class="website-link"><span class="badge has-website">View Site</span></a>`
+                    : '<span class="badge no-website">NO WEBSITE</span>';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span class="score ${scoreClass}">${p.score}</span></td>
+                        <td>
+                            <strong>${p.name}</strong><br>
+                            <small style="color: var(--text-dim)">${p.reasons}</small><br>
+                            <small style="color: var(--accent2)">💡 ${p.opportunity || 'General opportunity'}</small>
+                        </td>
+                        <td>${p.phone}</td>
+                        <td>${p.rating} ⭐</td>
+                        <td>${p.reviews}</td>
+                        <td>${websiteBadge}</td>
+                        <td><small>${p.address}</small></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // ========================================
+        // EXPORT
+        // ========================================
+        document.getElementById('downloadCsv').addEventListener('click', () => {
+            downloadFile(convertToCSV(allProspects), 'prospects.csv', 'text/csv');
+        });
+
+        document.getElementById('copyAll').addEventListener('click', () => {
+            navigator.clipboard.writeText(convertToCSV(allProspects));
+            alert('Copied to clipboard!');
+        });
+
+        function convertToCSV(data) {
+            const headers = ['Score', 'Business Name', 'Phone', 'Rating', 'Reviews', 'Has Website', 'Website URL', 'Address', 'Google Maps URL', 'Opportunities', 'Why Opportunity'];
+            const rows = data.map(p => [
+                p.score, p.name, p.phone, p.rating, p.reviews,
+                p.website ? 'YES' : 'NO',
+                p.website || '',
+                p.address, p.mapsUrl, p.opportunity, p.reasons
+            ]);
+            return [headers.join(','), ...rows.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n');
+        }
+
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ========================================
+        // UI HELPERS
+        // ========================================
+        function showStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.innerHTML = `<div class="status-line">${message}</div>`;
+            status.className = type;
+            status.style.display = 'block';
+        }
+
+        function addStatusLine(message) {
+            const status = document.getElementById('status');
+            const line = document.createElement('div');
+            line.className = 'status-line';
+            line.textContent = message;
+            status.appendChild(line);
+            status.scrollTop = status.scrollHeight;
+        }
+
+        function setProgress(percent) {
+            document.getElementById('progress-bar').style.width = percent + '%';
+        }
+
+        function disableButton(disabled) {
+            const btn = document.getElementById('runScraper');
+            btn.disabled = disabled;
+            btn.innerHTML = disabled ? 'Running Search...<span class="loading"></span>' : 'Run Search';
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>
