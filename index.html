@@ -19,6 +19,7 @@
             --border: #2d3340;
             --accent: #00ff88;
             --accent-dim: #00ff8833;
+            --accent2: #00ccff;
             --danger: #ff0055;
             --warning: #ffaa00;
             --text: #e6edf3;
@@ -77,10 +78,19 @@
             margin-bottom: 30px;
         }
 
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1100px) {
+            .grid-3 { grid-template-columns: 1fr 1fr; }
+        }
+
         @media (max-width: 900px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
+            .grid, .grid-3 { grid-template-columns: 1fr; }
         }
 
         .panel {
@@ -150,6 +160,110 @@
             gap: 15px;
         }
 
+        /* Toggle Switch */
+        .toggle-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toggle-item:hover {
+            border-color: var(--accent);
+        }
+
+        .toggle-item.active {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+        }
+
+        .toggle-label {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .toggle-item.active .toggle-label {
+            color: var(--accent);
+        }
+
+        .toggle-switch {
+            width: 40px;
+            height: 20px;
+            background: var(--border);
+            border-radius: 10px;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .toggle-item.active .toggle-switch {
+            background: var(--accent);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: all 0.2s;
+        }
+
+        .toggle-item.active .toggle-switch::after {
+            left: 23px;
+        }
+
+        /* Website Filter Tabs */
+        .tab-group {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--bg);
+            border: none;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-right: 1px solid var(--border);
+        }
+
+        .tab-btn:last-child { border-right: none; }
+
+        .tab-btn:hover {
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .tab-btn.active {
+            background: var(--accent-dim);
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
         button {
             background: var(--accent);
             color: var(--bg);
@@ -172,9 +286,7 @@
             box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
         }
 
-        button:active {
-            transform: translateY(0);
-        }
+        button:active { transform: translateY(0); }
 
         button:disabled {
             background: var(--border);
@@ -189,9 +301,7 @@
             color: var(--accent);
         }
 
-        .btn-secondary:hover {
-            background: var(--accent-dim);
-        }
+        .btn-secondary:hover { background: var(--accent-dim); }
 
         #status {
             margin-top: 30px;
@@ -200,15 +310,12 @@
             border-left: 4px solid var(--accent);
             font-size: 0.9rem;
             display: none;
+            max-height: 200px;
+            overflow-y: auto;
         }
 
-        #status.error {
-            border-left-color: var(--danger);
-        }
-
-        #status.warning {
-            border-left-color: var(--warning);
-        }
+        #status.error { border-left-color: var(--danger); }
+        #status.warning { border-left-color: var(--warning); }
 
         .status-line {
             margin: 5px 0;
@@ -216,13 +323,9 @@
             animation: fadeIn 0.3s forwards;
         }
 
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
+        @keyframes fadeIn { to { opacity: 1; } }
 
-        #results {
-            margin-top: 40px;
-        }
+        #results { margin-top: 40px; }
 
         .results-header {
             display: flex;
@@ -260,6 +363,33 @@
             margin-top: 5px;
         }
 
+        /* Result Tabs */
+        .result-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            width: fit-content;
+        }
+
+        .result-tab {
+            padding: 12px 24px;
+            background: var(--bg);
+            border: none;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-right: 1px solid var(--border);
+        }
+
+        .result-tab:last-child { border-right: none; }
+        .result-tab:hover { background: var(--surface); color: var(--text); }
+        .result-tab.active { background: var(--accent-dim); color: var(--accent); }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -267,9 +397,7 @@
             font-size: 0.85rem;
         }
 
-        thead {
-            background: var(--bg);
-        }
+        thead { background: var(--bg); }
 
         th {
             padding: 15px;
@@ -287,9 +415,7 @@
             border-bottom: 1px solid var(--border);
         }
 
-        tr:hover {
-            background: var(--bg);
-        }
+        tr:hover { background: var(--bg); }
 
         .score {
             font-weight: 700;
@@ -310,15 +436,8 @@
             letter-spacing: 1px;
         }
 
-        .badge.no-website {
-            background: var(--danger);
-            color: white;
-        }
-
-        .badge.has-website {
-            background: var(--border);
-            color: var(--text-dim);
-        }
+        .badge.no-website { background: var(--danger); color: white; }
+        .badge.has-website { background: #1a3a2a; color: var(--accent); border: 1px solid var(--accent); }
 
         .help-text {
             font-size: 0.8rem;
@@ -338,9 +457,7 @@
             margin-left: 10px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         #progress {
             height: 4px;
@@ -362,6 +479,23 @@
             gap: 15px;
             margin-top: 30px;
         }
+
+        .website-link {
+            color: var(--accent2);
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+
+        .website-link:hover { text-decoration: underline; }
+
+        .info-box {
+            background: var(--accent-dim);
+            border: 1px solid var(--accent);
+            padding: 12px 16px;
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -372,6 +506,7 @@
         </header>
 
         <div class="grid">
+            <!-- LEFT: Search Parameters -->
             <div class="panel">
                 <div class="panel-title">Search Parameters</div>
                 
@@ -384,6 +519,7 @@
                 <div class="form-group">
                     <label>City & State</label>
                     <input type="text" id="location" value="Columbus, Ohio" placeholder="e.g., Austin, Texas">
+                    <div class="help-text">Works for any city worldwide</div>
                 </div>
 
                 <div class="form-group">
@@ -405,40 +541,61 @@
                     <label>Custom Business Type</label>
                     <input type="text" id="customType" placeholder="e.g., auto repair">
                 </div>
+
+                <div class="form-group">
+                    <label>Max Results</label>
+                    <input type="number" id="maxResults" value="50" min="1" max="200">
+                    <div class="help-text">API cost control (higher = more API calls)</div>
+                </div>
             </div>
 
+            <!-- RIGHT: Filter Settings -->
             <div class="panel">
                 <div class="panel-title">Filter Settings</div>
-                
+
                 <div class="input-group">
                     <div class="form-group">
-                        <label>Max Rating</label>
-                        <input type="number" id="maxRating" value="3.8" step="0.1" min="1" max="5">
-                        <div class="help-text">3.8 or below</div>
+                        <label>Min Rating</label>
+                        <input type="number" id="minRating" value="1.0" step="0.1" min="1" max="5">
+                        <div class="help-text">Exclude ghost listings</div>
                     </div>
+                    <div class="form-group">
+                        <label>Max Rating</label>
+                        <input type="number" id="maxRating" value="4.4" step="0.1" min="1" max="5">
+                        <div class="help-text">4.4 catches most SMBs</div>
+                    </div>
+                </div>
 
+                <div class="input-group">
                     <div class="form-group">
                         <label>Min Reviews</label>
                         <input type="number" id="minReviews" value="3" min="0">
                         <div class="help-text">Proves legitimacy</div>
                     </div>
-                </div>
-
-                <div class="input-group">
                     <div class="form-group">
                         <label>Max Reviews</label>
-                        <input type="number" id="maxReviews" value="150" min="0">
+                        <input type="number" id="maxReviews" value="500" min="0">
                         <div class="help-text">Avoid big players</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Max Results</label>
-                        <input type="number" id="maxResults" value="50" min="1" max="200">
-                        <div class="help-text">API cost control</div>
                     </div>
                 </div>
 
-                <button id="runScraper" style="width: 100%; margin-top: 20px;">
+                <div class="form-group">
+                    <label>Website Filter</label>
+                    <div class="tab-group">
+                        <button class="tab-btn active" data-filter="all">All Businesses</button>
+                        <button class="tab-btn" data-filter="no-website">No Website Only</button>
+                        <button class="tab-btn" data-filter="has-website">Has Website Only</button>
+                    </div>
+                    <div class="help-text" id="websiteFilterHelp">Showing all businesses regardless of website status</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Keywords to Exclude (optional)</label>
+                    <input type="text" id="excludeKeywords" placeholder="e.g., LLC, national, franchise">
+                    <div class="help-text">Comma separated — filters out big chains</div>
+                </div>
+
+                <button id="runScraper" style="width: 100%; margin-top: 10px;">
                     Run Search
                 </button>
             </div>
@@ -461,6 +618,14 @@
 
             <div class="stats" id="statsContainer"></div>
 
+            <!-- Result view tabs -->
+            <div class="result-tabs">
+                <button class="result-tab active" data-view="all">All</button>
+                <button class="result-tab" data-view="no-website">No Website</button>
+                <button class="result-tab" data-view="has-website">Has Website</button>
+                <button class="result-tab" data-view="hot">Hot Leads</button>
+            </div>
+
             <div class="panel">
                 <table id="resultsTable">
                     <thead>
@@ -482,7 +647,7 @@
 
     <script>
         // ========================================
-        // FILE VERSION CHECK - Feb 17, 2026
+        // FILE VERSION CHECK
         // ========================================
         console.log('%c✅ CORRECT FILE LOADED', 'color: #00ff88; font-size: 16px; font-weight: bold');
         console.log('%c✅ Using Vercel Backend (NOT allorigins)', 'color: #00ff88; font-size: 14px');
@@ -494,14 +659,47 @@
         const BACKEND_API_URL = 'https://prospect-finder-api.vercel.app/api';
         
         let allProspects = [];
+        let websiteFilter = 'all';
+        let currentView = 'all';
 
-        // Show/hide custom business type input
+        // ========================================
+        // UI EVENT LISTENERS
+        // ========================================
+
+        // Custom business type toggle
         document.getElementById('businessType').addEventListener('change', (e) => {
             const customGroup = document.getElementById('customTypeGroup');
             customGroup.style.display = e.target.value === 'custom' ? 'block' : 'none';
         });
 
-        // Main scraper function
+        // Website filter tabs (search filter)
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                websiteFilter = btn.dataset.filter;
+                const helpMap = {
+                    'all': 'Showing all businesses regardless of website status',
+                    'no-website': '🎯 Only businesses with NO website — highest opportunity',
+                    'has-website': '🔧 Only businesses with a website — potential redesign clients'
+                };
+                document.getElementById('websiteFilterHelp').textContent = helpMap[websiteFilter];
+            });
+        });
+
+        // Result view tabs
+        document.querySelectorAll('.result-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.result-tab').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentView = btn.dataset.view;
+                renderTable();
+            });
+        });
+
+        // ========================================
+        // MAIN SEARCH FUNCTION
+        // ========================================
         document.getElementById('runScraper').addEventListener('click', async () => {
             const apiKey = document.getElementById('apiKey').value.trim();
             const location = document.getElementById('location').value.trim();
@@ -510,36 +708,26 @@
                 ? document.getElementById('customType').value.trim()
                 : businessTypeSelect;
             
+            const minRating = parseFloat(document.getElementById('minRating').value);
             const maxRating = parseFloat(document.getElementById('maxRating').value);
             const minReviews = parseInt(document.getElementById('minReviews').value);
             const maxReviews = parseInt(document.getElementById('maxReviews').value);
             const maxResults = parseInt(document.getElementById('maxResults').value);
+            const excludeKeywords = document.getElementById('excludeKeywords').value
+                .split(',').map(k => k.trim().toLowerCase()).filter(k => k.length > 0);
 
-            // Validation
-            if (!apiKey) {
-                showStatus('Please enter your Google API key', 'error');
-                return;
-            }
-            if (!location) {
-                showStatus('Please enter a city and state', 'error');
-                return;
-            }
-            if (!businessType) {
-                showStatus('Please enter a business type', 'error');
-                return;
-            }
+            if (!apiKey) { showStatus('Please enter your Google API key', 'error'); return; }
+            if (!location) { showStatus('Please enter a city and state', 'error'); return; }
+            if (!businessType) { showStatus('Please enter a business type', 'error'); return; }
 
-            // Reset
             allProspects = [];
             document.getElementById('results').style.display = 'none';
             document.getElementById('progress').style.display = 'block';
             setProgress(0);
-
             showStatus('Starting search...', 'info');
             disableButton(true);
 
             try {
-                // Test API key first
                 const testResult = await testApiKey(apiKey);
                 if (!testResult.success) {
                     showStatus(`API Error: ${testResult.error}`, 'error');
@@ -550,46 +738,51 @@
                 addStatusLine('✓ API key validated');
                 setProgress(10);
 
-                // Generate search queries
                 const queries = generateQueries(businessType, location);
                 addStatusLine(`Generated ${queries.length} search variations`);
-                setProgress(20);
+                setProgress(15);
 
-                // Search for businesses
                 let allPlaces = [];
                 for (let i = 0; i < queries.length; i++) {
                     addStatusLine(`Searching: ${queries[i]}`);
                     const results = await searchPlaces(queries[i], apiKey);
                     allPlaces = allPlaces.concat(results);
-                    setProgress(20 + (30 * (i + 1) / queries.length));
-                    await sleep(500);
+                    setProgress(15 + (30 * (i + 1) / queries.length));
+                    await sleep(400);
                 }
 
-                // Deduplicate by place_id
+                // Deduplicate
                 const uniquePlaces = {};
                 allPlaces.forEach(place => {
-                    const id = place.place_id;
-                    if (!uniquePlaces[id]) {
-                        uniquePlaces[id] = place;
+                    if (!uniquePlaces[place.place_id]) {
+                        uniquePlaces[place.place_id] = place;
                     }
                 });
 
                 addStatusLine(`Found ${Object.keys(uniquePlaces).length} unique businesses`);
                 setProgress(50);
 
-                // Filter by rating and reviews
-                const filtered = Object.values(uniquePlaces).filter(place => {
+                // Filter
+                let filtered = Object.values(uniquePlaces).filter(place => {
                     const rating = place.rating || 0;
                     const reviews = place.user_ratings_total || 0;
-                    return rating <= maxRating && 
-                           reviews >= minReviews && 
-                           reviews <= maxReviews;
+                    const name = (place.name || '').toLowerCase();
+
+                    // Rating & review filters
+                    if (rating < minRating || rating > maxRating) return false;
+                    if (reviews < minReviews || reviews > maxReviews) return false;
+
+                    // Exclude keywords
+                    if (excludeKeywords.length > 0) {
+                        if (excludeKeywords.some(kw => name.includes(kw))) return false;
+                    }
+
+                    return true;
                 });
 
                 addStatusLine(`${filtered.length} businesses match your filters`);
                 setProgress(60);
 
-                // Fetch details for each
                 const toFetch = filtered.slice(0, maxResults);
                 addStatusLine(`Fetching details for top ${toFetch.length} prospects...`);
 
@@ -598,6 +791,20 @@
                     addStatusLine(`[${i + 1}/${toFetch.length}] ${place.name}`);
                     
                     const details = await getPlaceDetails(place.place_id, apiKey);
+                    const hasWebsite = !!details.website;
+
+                    // Apply website filter
+                    if (websiteFilter === 'no-website' && hasWebsite) {
+                        setProgress(60 + (35 * (i + 1) / toFetch.length));
+                        await sleep(200);
+                        continue;
+                    }
+                    if (websiteFilter === 'has-website' && !hasWebsite) {
+                        setProgress(60 + (35 * (i + 1) / toFetch.length));
+                        await sleep(200);
+                        continue;
+                    }
+
                     const score = scoreOpportunity(details);
                     
                     allProspects.push({
@@ -609,16 +816,15 @@
                         reviews: details.user_ratings_total || place.user_ratings_total || 0,
                         website: details.website || '',
                         mapsUrl: details.url || '',
-                        reasons: score.reasons
+                        reasons: score.reasons,
+                        opportunity: score.opportunity
                     });
 
                     setProgress(60 + (35 * (i + 1) / toFetch.length));
                     await sleep(300);
                 }
 
-                // Sort by score
                 allProspects.sort((a, b) => b.score - a.score);
-
                 setProgress(100);
                 addStatusLine(`✓ Complete! Found ${allProspects.length} prospects`);
                 
@@ -636,7 +842,7 @@
         });
 
         // ========================================
-        // API FUNCTIONS - USING VERCEL BACKEND
+        // API FUNCTIONS
         // ========================================
         async function testApiKey(apiKey) {
             console.log('Testing API key via Vercel backend...');
@@ -644,23 +850,16 @@
                 const resp = await fetch(BACKEND_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'search',
-                        query: 'test',
-                        apiKey: apiKey
-                    })
+                    body: JSON.stringify({ action: 'search', query: 'test', apiKey })
                 });
                 const data = await resp.json();
-                
                 if (data.status === 'REQUEST_DENIED') {
                     return { success: false, error: data.error_message || 'API key denied. Enable Places API and billing.' };
-                } else if (data.status === 'OK') {
-                    console.log('✓ API key valid');
+                } else if (data.status === 'OK' || data.status === 'ZERO_RESULTS') {
                     return { success: true };
                 }
-                return { success: false, error: 'Unknown error' };
+                return { success: false, error: 'Unknown API error: ' + (data.status || 'no status') };
             } catch (error) {
-                console.error('API test failed:', error);
                 return { success: false, error: error.message };
             }
         }
@@ -670,18 +869,10 @@
                 const resp = await fetch(BACKEND_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'search',
-                        query: query,
-                        apiKey: apiKey
-                    })
+                    body: JSON.stringify({ action: 'search', query, apiKey })
                 });
                 const data = await resp.json();
-                
-                if (data.status === 'OK') {
-                    return data.results || [];
-                }
-                return [];
+                return (data.status === 'OK') ? data.results || [] : [];
             } catch (error) {
                 console.error('Search error:', error);
                 return [];
@@ -693,11 +884,7 @@
                 const resp = await fetch(BACKEND_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'details',
-                        placeId: placeId,
-                        apiKey: apiKey
-                    })
+                    body: JSON.stringify({ action: 'details', placeId, apiKey })
                 });
                 const data = await resp.json();
                 return data.result || {};
@@ -707,71 +894,126 @@
             }
         }
 
-        // Scoring
+        // ========================================
+        // SCORING
+        // ========================================
         function scoreOpportunity(details) {
             let score = 0;
             let reasons = [];
+            let opportunity = [];
 
             const rating = details.rating || 5;
             const reviews = details.user_ratings_total || 0;
             const hasWebsite = !!details.website;
 
+            // Rating score
             if (rating <= 2.5) {
-                score += 35;
-                reasons.push('Very low rating');
+                score += 35; reasons.push('Very low rating');
+                opportunity.push('Reputation management');
             } else if (rating <= 3.0) {
-                score += 30;
-                reasons.push('Low rating');
+                score += 30; reasons.push('Low rating');
+                opportunity.push('Reputation management');
             } else if (rating <= 3.5) {
-                score += 22;
-                reasons.push('Below average rating');
+                score += 22; reasons.push('Below average rating');
+                opportunity.push('Review strategy');
             } else if (rating <= 3.8) {
-                score += 12;
-                reasons.push('Slightly below average');
+                score += 12; reasons.push('Slightly below average');
+            } else if (rating <= 4.2) {
+                score += 6; reasons.push('Average rating');
             }
 
+            // Website score
             if (!hasWebsite) {
-                score += 30;
-                reasons.push('NO WEBSITE');
+                score += 30; reasons.push('NO WEBSITE');
+                opportunity.push('Website build');
+            } else {
+                score += 5;
+                opportunity.push('Website improvement');
             }
 
+            // Review count score
             if (reviews >= 5 && reviews <= 30) {
-                score += 20;
-                reasons.push('Small review count');
+                score += 20; reasons.push('Small review count');
+                opportunity.push('Review growth');
             } else if (reviews > 30 && reviews <= 80) {
-                score += 15;
-                reasons.push('Moderate reviews');
+                score += 15; reasons.push('Moderate reviews');
             } else if (reviews > 80) {
                 score += 5;
             } else {
                 score += 8;
             }
 
+            // Bonus
             if (details.formatted_phone_number) score += 5;
             if (details.business_status === 'OPERATIONAL') score += 10;
 
-            return { score, reasons: reasons.join(' | ') };
+            return { score, reasons: reasons.join(' | '), opportunity: opportunity.join(', ') };
         }
 
-        // Query generation
+        // ========================================
+        // EXPANDED QUERY GENERATION
+        // ========================================
         function generateQueries(businessType, location) {
-            return [
-                `${businessType} ${location}`,
-                `${businessType} contractor ${location}`,
-                `${businessType} repair ${location}`,
-                `${businessType} service ${location}`,
-                `${businessType} company ${location}`
+            const base = businessType.toLowerCase();
+            const queries = [
+                `${base} ${location}`,
+                `${base} contractor ${location}`,
+                `${base} repair ${location}`,
+                `${base} service ${location}`,
+                `${base} company ${location}`,
+                `local ${base} ${location}`,
+                `${base} near ${location}`,
+                `best ${base} ${location}`,
+                `affordable ${base} ${location}`,
+                `${base} installation ${location}`
             ];
+
+            // Add type-specific queries
+            const extras = {
+                'hvac': [
+                    `air conditioning repair ${location}`,
+                    `furnace repair ${location}`,
+                    `heating cooling ${location}`,
+                    `ac service ${location}`
+                ],
+                'plumbing': [
+                    `plumber ${location}`,
+                    `drain cleaning ${location}`,
+                    `pipe repair ${location}`
+                ],
+                'roofing': [
+                    `roofer ${location}`,
+                    `roof replacement ${location}`,
+                    `roof repair ${location}`
+                ],
+                'electrical': [
+                    `electrician ${location}`,
+                    `electrical repair ${location}`,
+                    `wiring ${location}`
+                ],
+                'landscaping': [
+                    `lawn care ${location}`,
+                    `lawn service ${location}`,
+                    `yard maintenance ${location}`
+                ]
+            };
+
+            const key = Object.keys(extras).find(k => base.includes(k));
+            if (key) queries.push(...extras[key]);
+
+            return queries;
         }
 
-        // Display results
+        // ========================================
+        // DISPLAY RESULTS
+        // ========================================
         function displayResults() {
             const hot = allProspects.filter(p => p.score >= 70).length;
             const warm = allProspects.filter(p => p.score >= 50 && p.score < 70).length;
-            const cold = allProspects.filter(p => p.score < 50).length;
             const noWebsite = allProspects.filter(p => !p.website).length;
+            const hasWebsite = allProspects.filter(p => !!p.website).length;
 
-            const statsHtml = `
+            document.getElementById('statsContainer').innerHTML = `
                 <div class="stat-card">
                     <div class="stat-value">${allProspects.length}</div>
                     <div class="stat-label">Total Found</div>
@@ -788,22 +1030,45 @@
                     <div class="stat-value">${noWebsite}</div>
                     <div class="stat-label">No Website</div>
                 </div>
+                <div class="stat-card">
+                    <div class="stat-value">${hasWebsite}</div>
+                    <div class="stat-label">Has Website</div>
+                </div>
             `;
-            document.getElementById('statsContainer').innerHTML = statsHtml;
+
+            renderTable();
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function renderTable() {
+            let filtered = [...allProspects];
+
+            if (currentView === 'no-website') filtered = filtered.filter(p => !p.website);
+            if (currentView === 'has-website') filtered = filtered.filter(p => !!p.website);
+            if (currentView === 'hot') filtered = filtered.filter(p => p.score >= 70);
 
             const tbody = document.getElementById('resultsBody');
             tbody.innerHTML = '';
 
-            allProspects.forEach(p => {
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-dim); padding: 40px;">No results in this category</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(p => {
                 const scoreClass = p.score >= 70 ? 'hot' : p.score >= 50 ? 'warm' : 'cold';
                 const websiteBadge = p.website 
-                    ? '<span class="badge has-website">Yes</span>'
-                    : '<span class="badge no-website">NO</span>';
+                    ? `<a href="${p.website}" target="_blank" class="website-link"><span class="badge has-website">View Site</span></a>`
+                    : '<span class="badge no-website">NO WEBSITE</span>';
 
-                const row = `
+                tbody.innerHTML += `
                     <tr>
                         <td><span class="score ${scoreClass}">${p.score}</span></td>
-                        <td><strong>${p.name}</strong><br><small style="color: var(--text-dim)">${p.reasons}</small></td>
+                        <td>
+                            <strong>${p.name}</strong><br>
+                            <small style="color: var(--text-dim)">${p.reasons}</small><br>
+                            <small style="color: var(--accent2)">💡 ${p.opportunity || 'General opportunity'}</small>
+                        </td>
                         <td>${p.phone}</td>
                         <td>${p.rating} ⭐</td>
                         <td>${p.reviews}</td>
@@ -811,42 +1076,30 @@
                         <td><small>${p.address}</small></td>
                     </tr>
                 `;
-                tbody.innerHTML += row;
             });
-
-            document.getElementById('results').style.display = 'block';
         }
 
-        // Export functions
+        // ========================================
+        // EXPORT
+        // ========================================
         document.getElementById('downloadCsv').addEventListener('click', () => {
-            const csv = convertToCSV(allProspects);
-            downloadFile(csv, 'prospects.csv', 'text/csv');
+            downloadFile(convertToCSV(allProspects), 'prospects.csv', 'text/csv');
         });
 
         document.getElementById('copyAll').addEventListener('click', () => {
-            const csv = convertToCSV(allProspects);
-            navigator.clipboard.writeText(csv);
+            navigator.clipboard.writeText(convertToCSV(allProspects));
             alert('Copied to clipboard!');
         });
 
         function convertToCSV(data) {
-            const headers = ['Score', 'Business Name', 'Phone', 'Rating', 'Reviews', 'Website', 'Address', 'Google Maps URL', 'Why Opportunity'];
+            const headers = ['Score', 'Business Name', 'Phone', 'Rating', 'Reviews', 'Has Website', 'Website URL', 'Address', 'Google Maps URL', 'Opportunities', 'Why Opportunity'];
             const rows = data.map(p => [
-                p.score,
-                p.name,
-                p.phone,
-                p.rating,
-                p.reviews,
-                p.website || 'NO',
-                p.address,
-                p.mapsUrl,
-                p.reasons
+                p.score, p.name, p.phone, p.rating, p.reviews,
+                p.website ? 'YES' : 'NO',
+                p.website || '',
+                p.address, p.mapsUrl, p.opportunity, p.reasons
             ]);
-
-            return [
-                headers.join(','),
-                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
-            ].join('\n');
+            return [headers.join(','), ...rows.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n');
         }
 
         function downloadFile(content, filename, type) {
@@ -859,7 +1112,9 @@
             URL.revokeObjectURL(url);
         }
 
-        // UI Helpers
+        // ========================================
+        // UI HELPERS
+        // ========================================
         function showStatus(message, type = 'info') {
             const status = document.getElementById('status');
             status.innerHTML = `<div class="status-line">${message}</div>`;
